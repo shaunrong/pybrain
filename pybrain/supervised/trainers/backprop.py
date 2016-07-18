@@ -8,6 +8,7 @@ from math import isnan
 from pybrain.supervised.trainers.trainer import Trainer
 from pybrain.utilities import fListToString
 from pybrain.auxiliary import GradientDescent
+import numpy as np
 
 
 class BackpropTrainer(Trainer):
@@ -62,7 +63,9 @@ class BackpropTrainer(Trainer):
             errors += e
             ponderation += p
             if not self.batchlearning:
-                gradient = self.module.derivs - self.weightdecay * self.module.params
+                # gradient = self.module.derivs - self.weightdecay * self.module.params ##original
+                list_of_sign_multiply_by_weight=list(np.sign(self.module.params)*self.weightdecay)
+                gradient = self.module.derivs - list_of_sign_multiply_by_weight   ##WX change this into L1 regularized
                 new = self.descent(gradient, errors)
                 if new is not None:
                     self.module.params[:] = new
